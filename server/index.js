@@ -3,9 +3,13 @@ const http = require('http');
 const {Server} = require('socket.io')
 const PORT = process.env.PORT || 3001;
 
+const userToSocket = new Map();
+
 function init() {
     
     const httpServer = http.createServer();
+
+    const randomRoom = 1;
 
     const io = new Server(httpServer, {
         cors:{
@@ -17,17 +21,22 @@ function init() {
         console.log(socket.id);
 
         socket.on("Join-Game", (data) => {
-            // console.log(data);
             const user = data.user;
-            const room = data.roomCode;
-            socket.join(room);
-            io.to(room).emit("user-Joined", socket.id);
+            
+            console.log(`Joining ${user}...`);
+            socket.join(randomRoom);
+            socket.emit("joined-success", {success:true});
+            console.log(`Joined SuccessFully ${user}...`);
+
+            userToSocket.set(user,socket.id);
+
+            io.to(randomRoom).emit("user-Joined", {newUser:user});
         })
 
         socket.on('disconnect', () => {
             console.log("Disconnect",socket.id);
             // io.disconnectSockets()
-            // socket.disconnect();
+            socket.disconnect();
         })
     })
 

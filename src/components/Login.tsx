@@ -1,20 +1,25 @@
 "use client"
 import React,{useState} from 'react'
-// import socket from '@/socket/socket'
-
+import socket from '@/socket/socket'
+import {useRouter} from 'next/navigation'
 
 const Login:React.FC = () => {
-    const [userName, setUserName] = useState("");
-    const [roomCode, setRoomCode] = useState();
-
-    // socket.on("user-Joined", (data) => {
-    //     console.log(data);
-    // })
-
-    // function joinGame() {
-    //     // console.log(userName);
-    //     socket.emit('Join-Game', {user:userName, roomCode: roomCode});
-    // }
+  const router = useRouter(); 
+  const [userName, setUserName] = useState("");
+  
+  function joinGame(e:React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (userName != "") {
+      socket.emit('Join-Game', {user:userName});
+    
+      socket.on('joined-success', (data) => {
+        console.log(data);
+        if (data.success) {
+          router.replace('/game')
+        }
+      })
+    }
+  }
 
 
   return (
@@ -24,14 +29,15 @@ const Login:React.FC = () => {
           <h1>Logo</h1>
         </div>
 
-        <div className='flex flex-col w-80 border-2 rounded p-2 space-y-4'>
-          <input className='text-black p-2' type="text" placeholder='Enter your name' />
+        <form  className='flex flex-col w-80 border-2 rounded p-2 space-y-4' onSubmit={(e) => joinGame(e)} >
+
+          <input className='text-black p-2' type="text" name='userName' onChange={(e) => {setUserName(e.target.value)}} placeholder='Enter your name' />
           
           {/* Image */}
 
-          <button className='game-play' >Play</button>
+          <button type='submit' className='game-play'>Play</button>
           <button className='game-play' >Create Private Room</button>
-        </div>
+        </form>
 
         <div className='flex justify-between'>
           <div className='game-updates'>

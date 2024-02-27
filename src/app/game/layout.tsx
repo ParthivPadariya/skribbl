@@ -19,15 +19,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-
-      <body className={inter.className}>
-        
-        {/* <GamePlayer/> */}
-        {/* {children} */}
-        {/* <GameChat/> */}
+    <div className="flex justify-between p-24">
       
-      </body>
-    </html>
+      <GamePlayer/>
+      {children}
+      <GameChat/> 
+    
+    </div>
   );
 }
