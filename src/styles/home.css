@@ -1,0 +1,7 @@
+.game-updates{
+    @apply w-96 m-2 flex flex-col items-center gap-3
+}
+
+.game-play{
+    @apply bg-blue-600 rounded h-10 w-auto
+}

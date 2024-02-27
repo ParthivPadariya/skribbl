@@ -23,9 +23,9 @@ export default function RootLayout({
 
       <body className={inter.className}>
         
-        <GamePlayer/>
-        {children}
-        <GameChat/>
+        {/* <GamePlayer/> */}
+        {/* {children} */}
+        {/* <GameChat/> */}
       
       </body>
     </html>
