@@ -1,5 +1,5 @@
 "use client"
-import React,{useState} from 'react'
+import React,{useEffect, useState, useCallback} from 'react'
 import socket from '@/socket/socket'
 import {useRouter} from 'next/navigation'
 
@@ -11,16 +11,13 @@ const Login:React.FC = () => {
     e.preventDefault();
     if (userName != "") {
       socket.emit('Join-Game', {user:userName});
-    
-      socket.on('joined-success', (data) => {
-        console.log(data);
-        if (data.success) {
-          router.replace('/game')
-        }
-      })
     }
   }
-
+  socket.on('joined-success', (data) => {
+    if (data.success) {
+      router.replace(`/${userName}`)
+    }
+  })
 
   return (
     <>

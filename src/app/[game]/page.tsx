@@ -1,6 +1,7 @@
 import React from 'react'
 
-const page = () => {
+const page:React.FC = () => {
+  
   return (
     <div>
         <h1>Middle Part</h1>

@@ -15,15 +15,20 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: {
+    game: string
+  }
 }>) {
+  
   return (
     <div className="flex justify-between p-24">
       
       <GamePlayer/>
       {children}
-      <GameChat/> 
+      <GameChat userName={params.game}/> 
     
     </div>
   );

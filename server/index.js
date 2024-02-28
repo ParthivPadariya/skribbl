@@ -19,7 +19,7 @@ function init() {
 
     io.on('connect', (socket) => {
         console.log(socket.id);
-
+        
         socket.on("Join-Game", (data) => {
             const user = data.user;
             
@@ -31,6 +31,11 @@ function init() {
             userToSocket.set(user,socket.id);
 
             io.to(randomRoom).emit("user-Joined", {newUser:user});
+        })
+
+        socket.on('send-msg',(data) => {
+            console.log(data);
+            io.to(randomRoom).emit('receive-msg', {msg:data.message});
         })
 
         socket.on('disconnect', () => {
