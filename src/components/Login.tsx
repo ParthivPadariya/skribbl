@@ -1,5 +1,5 @@
 "use client"
-import React,{useEffect, useState, useCallback} from 'react'
+import React,{useState} from 'react'
 import socket from '@/socket/socket'
 import {useRouter} from 'next/navigation'
 
@@ -13,6 +13,7 @@ const Login:React.FC = () => {
       socket.emit('Join-Game', {user:userName});
     }
   }
+
   socket.on('joined-success', (data) => {
     if (data.success) {
       router.replace(`/${userName}`)
@@ -21,12 +22,12 @@ const Login:React.FC = () => {
 
   return (
     <>
-      <div className='flex w-full flex-col h-screen items-center justify-between'>
+      <div className='flex w-screen flex-col h-screen items-center justify-between'>
         <div>
           <h1>Logo</h1>
         </div>
 
-        <form  className='flex flex-col w-80 border-2 rounded p-2 space-y-4' onSubmit={(e) => joinGame(e)} >
+        <form  className='flex flex-col  w-80 border-2 rounded p-2 space-y-4' onSubmit={(e) => joinGame(e)} >
 
           <input className='text-black p-2' type="text" name='userName' onChange={(e) => {setUserName(e.target.value)}} placeholder='Enter your name' />
           

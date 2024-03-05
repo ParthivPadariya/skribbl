@@ -1,7 +1,7 @@
 import JoinGame from '@/components/Login'
 
-export default async function Home() {
-  
+export default function Home() {
+
   return (
     <>
       <JoinGame/>

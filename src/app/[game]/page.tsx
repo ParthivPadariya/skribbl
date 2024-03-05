@@ -1,11 +1,12 @@
 import React from 'react'
+import GameBoard from '@/components/gameBoard'
 
 const page:React.FC = () => {
   
   return (
-    <div>
-        <h1>Middle Part</h1>
-    </div>
+    <>
+        <GameBoard/>
+    </>
   )
 }
 

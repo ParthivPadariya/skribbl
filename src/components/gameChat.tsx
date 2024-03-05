@@ -24,7 +24,7 @@ const gameChat: React.FC<params> = (params) => {
     });
   }, [socket]);
 
-  useEffect(() => {
+  useEffect(() => {``
     receiveMessage();
     return () => receiveMessage();
   }, [receiveMessage]);
