@@ -1,24 +1,24 @@
 "use client"
 import React,{useState} from 'react'
-import socket from '@/socket/socket'
 import {useRouter} from 'next/navigation'
 
+// Context
+import {useSocket} from '@/context/SocketProvider'
+
 const Login:React.FC = () => {
+  
   const router = useRouter(); 
   const [userName, setUserName] = useState("");
   
+  const {joinRoom} = useSocket();
+
   function joinGame(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (userName != "") {
-      socket.emit('Join-Game', {user:userName});
+      joinRoom({userName});
     }
   }
 
-  socket.on('joined-success', (data) => {
-    if (data.success) {
-      router.replace(`/${userName}`)
-    }
-  })
 
   return (
     <>

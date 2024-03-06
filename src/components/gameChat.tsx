@@ -1,48 +1,40 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
-import socket from "@/socket/socket";
+import React, { useState } from "react";
+
+// Context
+import {useSocket} from '@/context/SocketProvider'
+
 
 interface params {
   userName: string;
 }
 
+
 const gameChat: React.FC<params> = (params) => {
+
   const [msg, setMsg] = useState("");
-  const [msgList, setMsgList] = useState<
-    {
-      msg: string;
-    }[]>([]);
-
-  function sendMessage(e: React.FormEvent<HTMLFormElement>) {
+  
+  const {sendMessage, messages} = useSocket();
+  
+  function sendMess(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    socket.emit("send-msg", { message: msg, user: params.userName });
+    sendMessage(msg);
   }
-
-  const receiveMessage = useCallback(() => {
-    socket.on("receive-msg", (data) => {
-      setMsgList((list) => [...list, { msg: data.msg }]);
-    });
-  }, [socket]);
-
-  useEffect(() => {``
-    receiveMessage();
-    return () => receiveMessage();
-  }, [receiveMessage]);
 
   return (
     <div className="border-2 p-2">
       <div className="h-96 overflow-y-auto">
         <h3>Messages</h3>
-        {msgList.map((item, key) => {
+        {messages.map((item, key) => {
           return (
             <div key={key}>
-              <h1>{item.msg}</h1>
+              <h1>{item}</h1>
             </div>
           );
         })}
       </div>
 
-      <form className="flex gap-4" onSubmit={(e) => sendMessage(e)}>
+      <form className="flex gap-4" onSubmit={(e) => sendMess(e)}>
         <input
           type="text"
           className="p-2 text-black"

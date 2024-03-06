@@ -20,22 +20,22 @@ function init() {
     io.on('connect', (socket) => {
         console.log(socket.id);
         
-        socket.on("Join-Game", (data) => {
+        socket.on("join-room", (data) => {
             const user = data.user;
             
             console.log(`Joining ${user}...`);
             socket.join(randomRoom);
-            socket.emit("joined-success", {success:true});
+            socket.emit("join-success", {success:true,user});
             console.log(`Joined SuccessFully ${user}...`);
 
             userToSocket.set(user,socket.id);
 
-            io.to(randomRoom).emit("user-Joined", {newUser:user});
+            io.to(randomRoom).emit("user-joined", {newUser:user});
         })
 
         socket.on('send-msg',(data) => {
             console.log(data);
-            io.to(randomRoom).emit('receive-msg', {msg:data.message});
+            io.to(randomRoom).emit('rec-msg', {message:data.message});
         })
 
         socket.on('disconnect', () => {
