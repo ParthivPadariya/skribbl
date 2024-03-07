@@ -38,6 +38,18 @@ function init() {
             io.to(randomRoom).emit('rec-msg', {message:data.message});
         })
 
+
+        socket.on('draw-line', ({prevPoint, currentPoint, color}) => {
+            // console.log("da");
+            // socket.broadcast.emit('draw-line', {currentPoint,prevPoint,color})
+            // socket.to(randomRoom).emit('draw-line', {prevPoint,currentPoint,color});
+            io.to(randomRoom).emit('draw-line', {prevPoint,currentPoint,color});
+        })
+
+        socket.on('clear', () => {
+            io.to(randomRoom).emit('clear');
+        })
+
         socket.on('disconnect', () => {
             console.log("Disconnect",socket.id);
             // io.disconnectSockets()

@@ -1,5 +1,6 @@
 "use client"
 import {useEffect,useRef,useState} from 'react'
+// import { useSocket } from '@/context/SocketProvider'
 
 interface Point {
     x: number,
@@ -15,6 +16,7 @@ interface Draw {
 export const useDraw = (onDraw: ({ctx, currentPoint, prevPoint}:Draw) => void) => {
     
     const [mouseDown, setMouseDown] = useState(false);
+    // const { sendPosition } = useSocket();
 
     // canvas reference where we have to draw
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -44,6 +46,8 @@ export const useDraw = (onDraw: ({ctx, currentPoint, prevPoint}:Draw) => void) =
                 return
             }
             const currentPoint = computePointInCanvas(e);
+            
+            // sendPosition({xPoint:currentPoint?.x, yPoint:currentPoint?.y});
 
             const ctx = canvasRef.current?.getContext('2d')
             if(!ctx || !currentPoint) return
@@ -81,5 +85,5 @@ export const useDraw = (onDraw: ({ctx, currentPoint, prevPoint}:Draw) => void) =
         }
     },[onDraw])
 
-    return {canvasRef, onMouseDown};
+    return {canvasRef, onMouseDown, clear};
 }

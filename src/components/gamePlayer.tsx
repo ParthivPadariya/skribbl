@@ -12,8 +12,8 @@ const gamePlayer = () => {
       <h1>Left Part</h1>
       <div className='my-4'>
         {
-          userInRoom.map((item:string) => {
-            return <Player user={item}/>
+          userInRoom.map((item:string,key) => {
+            return <Player key={key} user={item}/>
           })
         }
       </div>
