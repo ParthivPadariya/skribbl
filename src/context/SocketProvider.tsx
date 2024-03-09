@@ -18,6 +18,7 @@ interface ISocketContext {
     joinRoom: ({userName}:{userName:string}) => any;
     sendMessage: (msg: string) => any;
     sendPosition: ({prevPoint, currentPoint, color}:{prevPoint:Point|null, currentPoint:Point|null, color:string|undefined}) => any
+    updateRoomDetails: ({remTime, currRound}:{remTime:number, currRound:number}) => any;
     messages: {
         message: string,
         user: string,
@@ -25,6 +26,10 @@ interface ISocketContext {
     }[];
     userInRoom: string[];
     socket:Socket | undefined
+    roomDetails: {
+        time:number,
+        round:number
+    }
 }
 
 
@@ -44,6 +49,14 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
     const [socket, setSocket] = useState<Socket>();
     const [messages, setMessages] = useState<{message:string, user:string, color:string}[]>([]);
     const [userInRoom, setUserInRoom] = useState<string[]>([]);
+    const [roomDetails,setRoomDetails] = useState<{
+        time:number,
+        round:number
+    }>({
+        time:60,
+        round:0
+    });
+
 
     const router = useRouter(); 
 
@@ -71,6 +84,8 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
         // console.log(prevPoint,currentPoint,color);
         socket?.emit('draw-line',{prevPoint,currentPoint,color});    
     }
+
+    
 
     // Receive Part
     const receiveMessage = useCallback((msg:{message:string, user:string}) => {
@@ -103,6 +118,11 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
         setUserInRoom(receive);
     },[])
 
+    const updateRoomDetails:ISocketContext['updateRoomDetails'] = useCallback(({remTime, currRound}) => {
+        // console.log(remTime,currRound);
+        setRoomDetails({time:remTime, round:currRound});
+    },[])
+
     useEffect(() => {
         const _socket = io('http://localhost:3001');
         
@@ -111,18 +131,20 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
         _socket.on('user-joined', userJoined);
         // _socket.on('draw-line',recPosition);
         _socket.on('leave-room', removeUser);
+        _socket.on('update-room', updateRoomDetails)
 
         setSocket(_socket);
 
         return () => {
             _socket.off();
             _socket.disconnect();
+
             setSocket(undefined);
         }
     },[])
 
     return (
-        <SocketContext.Provider value={{ socket, sendMessage, messages, joinRoom, userInRoom, sendPosition }}>
+        <SocketContext.Provider value={{ socket, sendMessage, messages, joinRoom, userInRoom, sendPosition, updateRoomDetails, roomDetails }}>
             {children}
         </SocketContext.Provider>
     )

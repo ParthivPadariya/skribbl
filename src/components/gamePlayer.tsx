@@ -10,11 +10,12 @@ const gamePlayer = () => {
 
   const length = userInRoom.length;
   
-  let randomTorn = Math.floor(Math.random()*length);
+  let randomTorn = 0;
+  // let randomTorn = Math.floor(Math.random()*length);
 
-  setTimeout(() => {
-    randomTorn = Math.floor(Math.random()*length);
-  }, 1000);
+  // setTimeout(() => {
+  //   randomTorn = Math.floor(Math.random()*length);
+  // }, 2000);
 
   return (
     <div>

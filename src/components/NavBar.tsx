@@ -1,14 +1,47 @@
+"use client"
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
+import {useSocket} from '@/context/SocketProvider'
 // Image
 import Timer from '../assets/Timer.png'
 import Setting from '../assets/Setting.png'
 
 const NavBar = () => {
 
+  const [randomIndex, setRandomIndex] = useState(0);
+  
   const randomName = ["Lion","Bag", "Elephants", "Milk", "Water", "Rain", "River", "grass"];
-  const randomIndex = Math.floor(Math.random()*10+1);
+  
+  const {socket, roomDetails} = useSocket();
+
+  const [time, setTime] = useState(roomDetails.time)
+  const [noOfRound, setOfRound] = useState(roomDetails.round);
+
+  useEffect(() => {
+
+    const result:any = time > 0 && setInterval(() => {
+      socket?.emit('update-room', {remTime:time,currRound:noOfRound})
+      setTime(time-1);
+    },1000)
+
+    return () => {
+      clearInterval(result);
+    }
+
+  },[time])
+  
+
+
+  if (time == 0 && noOfRound < 3) {
+    setTime(60);
+    setOfRound(noOfRound + 1);
+    setRandomIndex(Math.floor(Math.random()*10+1));
+  }
+
+  if (noOfRound == 3) {
+    console.log("Result Declare");
+  }
 
   // const size = randomName[randomIndex].length;
   // console.log(randomIndex);
@@ -21,7 +54,12 @@ const NavBar = () => {
           width={50}
           height={50}
           alt="Picture of Timer"/>
-        <p>No of Round:1</p>
+        <p>
+          {
+            time
+          }
+        </p>
+        <p>No of Round:{noOfRound}</p>
 
         <div className='flex flex-col justify-center items-center w-10/12 '>
             <p>Guess This</p> 
@@ -32,7 +70,6 @@ const NavBar = () => {
                 <span>_</span>
                 <span>_</span>
               </div>
-
             }
         </div>
 

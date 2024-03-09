@@ -48,7 +48,6 @@ function init() {
             const a = JSON.stringify(Array.from(userInRoom.entries()));
             io.to(randomRoom).emit("user-joined", {newUser:user,userList:a, room: randomRoom});
 
-
             let size = io.sockets.adapter.rooms.get(randomRoom)?.size
             // console.log(size,randomRoom);
             if(size > 3){
@@ -69,6 +68,14 @@ function init() {
 
             // console.log(msg,socketId,roomId);
             io.to(roomId).emit('rec-msg', {message:data.message, user});
+        })
+
+        socket.on('update-room', ({remTime, currRound}) => {
+            // console.log(remTime,currRound);
+
+            const roomId = socketToRoom.get(socket.id);
+
+            io.to(roomId).emit('update-room', {remTime, currRound});
         })
 
         socket.on('draw-line', ({prevPoint, currentPoint, color}) => {
