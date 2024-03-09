@@ -47,7 +47,6 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
 
     const router = useRouter(); 
 
-
     // Sending Part
     const sendMessage: ISocketContext["sendMessage"] = useCallback(
         (msg) => {
@@ -59,7 +58,6 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
         [socket]
     );
     
-
     const joinRoom: ISocketContext["joinRoom"] = useCallback(
         ({userName}) => {
             // console.log("Join Room",userName);
@@ -91,8 +89,13 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
 
     }, []);
 
-    const userJoined = (msg:{newUser: string}) => {
-        setUserInRoom((prev) => [...prev, msg.newUser]);
+    const userJoined = (msg:{newUser: string, userList: string, room:number}) => {
+        // console.log(msg.userList);
+        const receiveMap = new Map(JSON.parse(msg.userList));
+        const result:string[]|any = receiveMap.get(msg.room);
+  
+        setUserInRoom(result);
+        // setUserInRoom((prev) => [...prev, msg.newUser]);
     }
 
     useEffect(() => {

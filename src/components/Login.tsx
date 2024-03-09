@@ -19,7 +19,9 @@ const Login:React.FC = () => {
     }
   }
 
-
+  function createRoom() {
+    
+  }
   return (
     <>
       <div className='flex w-screen flex-col h-screen items-center justify-between'>
@@ -34,7 +36,7 @@ const Login:React.FC = () => {
           {/* Image */}
 
           <button type='submit' className='game-play'>Play</button>
-          <button className='game-play' >Create Private Room</button>
+          <button className='game-play' onClick={createRoom}>Create Private Room</button>
         </form>
 
         <div className='flex justify-between'>

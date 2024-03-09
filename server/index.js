@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 3001;
 
 const SocketToUser = new Map();
 const socketToRoom = new Map();
+const userInRoom = new Map();
 
 function init() {
     
@@ -34,8 +35,18 @@ function init() {
             
             SocketToUser.set(socket.id,user);
             socketToRoom.set(socket.id,randomRoom);
+            let result = userInRoom.get(randomRoom);
             
-            io.to(randomRoom).emit("user-joined", {newUser:user});
+            if(result != undefined){
+                userInRoom.set(randomRoom,[...userInRoom?.get(randomRoom),user]);
+            }
+            else{
+                userInRoom.set(randomRoom,[user]);
+            }
+
+            // console.log("userInRoom", userInRoom);
+            const a = JSON.stringify(Array.from(userInRoom.entries()));
+            io.to(randomRoom).emit("user-joined", {newUser:user,userList:a, room: randomRoom});
 
 
             let size = io.sockets.adapter.rooms.get(randomRoom)?.size
@@ -82,7 +93,12 @@ function init() {
             console.log("Disconnect",socket.id);
 
             socketToRoom.delete(socket.id);
-            SocketToUser.delete(socket.id)
+            SocketToUser.delete(socket.id);
+            // userInRoom.delete()
+
+            // const a = JSON.stringify(Array.from(userInRoom.entries()));
+            // io.to(randomRoom).emit("user-joined", {newUser:user,userList:a, room: randomRoom});
+
             // io.disconnectSockets()
             socket.disconnect();
         })

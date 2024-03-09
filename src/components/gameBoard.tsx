@@ -25,7 +25,9 @@ const GameBoard = () => {
 
   const {canvasRef,onMouseDown, clear} = useDraw(createLine);
 
-  const {sendPosition, socket} = useSocket();
+  const {sendPosition, socket, userInRoom} = useSocket();
+
+  // console.log("Length:- ",userInRoom.length);
 
   useEffect(() => {
 
@@ -71,8 +73,14 @@ const GameBoard = () => {
           className='border-2 border-black rounded-md'
           style={{border:"2px solid black"}}
           />
-
+        
+        {/* <div className='flex absolute bg-gray-700 bg-opacity-80'>
+          <button>Number-1</button>
+          <button>Number-1</button>
+          <button>Number-1</button>
+        </div> */}
       </div>
+
       <button type='button' className='p-2 rounded-md bg-white text-black border border-black' onClick={() => clearCanvas()}>
         Clear Canvas 
       </button>
