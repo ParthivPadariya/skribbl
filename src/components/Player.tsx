@@ -1,7 +1,12 @@
+import Image from 'next/image'
 import React from 'react'
 
+
+import Pencil from '../assets/Pencil1.gif'
+
 interface user {
-    user: string
+  turn: boolean,
+  user: string
 }
 
 const Player:React.FC<user> = (props) => {
@@ -21,7 +26,16 @@ const Player:React.FC<user> = (props) => {
         <p className='text-xs'>175 Points</p>
       </div>
 
-      <div>
+      <div className='flex gap-1 items-center justify-center m-1'>
+        {
+          props.turn ?
+          <Image
+          src={Pencil}
+          width={30}
+          height={40}
+          alt="Pencil"
+          /> : null
+        }
         <h1>Image</h1>
       </div>
     </div>

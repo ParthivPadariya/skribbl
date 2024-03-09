@@ -96,7 +96,12 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
   
         setUserInRoom(result);
         // setUserInRoom((prev) => [...prev, msg.newUser]);
-    }
+    }   
+
+    const removeUser = useCallback((msg:{userName: string, userList: string}) => {
+        const receive = JSON.parse(msg.userList);
+        setUserInRoom(receive);
+    },[])
 
     useEffect(() => {
         const _socket = io('http://localhost:3001');
@@ -105,6 +110,7 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
         _socket.on('rec-msg',receiveMessage);
         _socket.on('user-joined', userJoined);
         // _socket.on('draw-line',recPosition);
+        _socket.on('leave-room', removeUser);
 
         setSocket(_socket);
 

@@ -92,15 +92,25 @@ function init() {
         socket.on('disconnect', () => {
             console.log("Disconnect",socket.id);
 
+            const userName = SocketToUser.get(socket.id);
+            const room = socketToRoom.get(socket.id);
+
             socketToRoom.delete(socket.id);
             SocketToUser.delete(socket.id);
-            // userInRoom.delete()
-
-            // const a = JSON.stringify(Array.from(userInRoom.entries()));
-            // io.to(randomRoom).emit("user-joined", {newUser:user,userList:a, room: randomRoom});
+            
+            let array = userInRoom.get(room);
+            let index = array?.indexOf(userName);
+            if(index != -1){
+                array?.splice(index,1);
+            }
+            
+            const userList = JSON.stringify(array);
+            io.to(room).emit('leave-room',{userName,userList});
 
             // io.disconnectSockets()
             socket.disconnect();
+
+
         })
     })
 

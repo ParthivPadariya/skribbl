@@ -25,9 +25,7 @@ const GameBoard = () => {
 
   const {canvasRef,onMouseDown, clear} = useDraw(createLine);
 
-  const {sendPosition, socket, userInRoom} = useSocket();
-
-  // console.log("Length:- ",userInRoom.length);
+  const {sendPosition, socket} = useSocket();
 
   useEffect(() => {
 
