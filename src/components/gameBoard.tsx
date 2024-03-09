@@ -5,10 +5,10 @@ import {useDraw} from '@/hooks/useDraw'
 
 // Context
 import {useSocket} from '@/context/SocketProvider'
-import {Socket} from 'socket.io-client'
 
 import { drawLine } from '@/utils/drawLine'
 
+/*
 interface Point {
   x: number,
   y: number
@@ -19,6 +19,7 @@ interface Draw {
   currentPoint: Point 
   prevPoint: Point | null
 }
+*/
 
 const GameBoard = () => {
 
@@ -29,6 +30,7 @@ const GameBoard = () => {
   useEffect(() => {
 
     const ctx = canvasRef.current?.getContext('2d');
+
 
     socket?.on('draw-line', ({prevPoint,currentPoint,color}:{prevPoint:Point|null, currentPoint:Point, color:string}) => {
       if (!ctx) {
@@ -54,21 +56,24 @@ const GameBoard = () => {
   }
 
   function clearCanvas() {
-    socket?.emit('clear')
+    const socketId = socket?.id;
+    socket?.emit('clear', {socketId});
   }
 
   return (
-    <div className='bg-white'>
-      <canvas
-        ref={canvasRef}
-        onMouseDown={onMouseDown}
-        width={650}
-        height={580}
-        className='border-2 border-black rounded-md'
-        style={{border:"2px solid black"}}
-      />
+    <div className='flex flex-col'>
+      <div className='bg-white'>
+        <canvas
+          ref={canvasRef}
+          onMouseDown={onMouseDown}
+          width={820}
+          height={600}
+          className='border-2 border-black rounded-md'
+          style={{border:"2px solid black"}}
+          />
 
-      <button type='button' className='p-2 rounded-md text-white border border-black' onClick={() => clearCanvas()}>
+      </div>
+      <button type='button' className='p-2 rounded-md bg-white text-black border border-black' onClick={() => clearCanvas()}>
         Clear Canvas 
       </button>
     </div>

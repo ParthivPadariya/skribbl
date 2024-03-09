@@ -4,8 +4,7 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 
-import GameChat from '@/components/gameChat'
-import GamePlayer from '@/components/gamePlayer'
+import NavBar from "@/components/NavBar";
 
 
 export const metadata: Metadata = {
@@ -14,21 +13,18 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
-  params,
+  children
 }: Readonly<{
   children: React.ReactNode;
-  params: {
-    game: string
-  }
 }>) {
   
   return (
-    <div className="flex justify-between p-24">
+    <div className="flex flex-col justify-center items-center">
       
-      <GamePlayer/>
-      {children}
-      <GameChat userName={params.game}/> 
+      <NavBar/>
+      {
+        children
+      }
     
     </div>
   );

@@ -18,7 +18,11 @@ interface ISocketContext {
     joinRoom: ({userName}:{userName:string}) => any;
     sendMessage: (msg: string) => any;
     sendPosition: ({prevPoint, currentPoint, color}:{prevPoint:Point|null, currentPoint:Point|null, color:string|undefined}) => any
-    messages: string[];
+    messages: {
+        message: string,
+        user: string,
+        color: string
+    }[];
     userInRoom: string[];
     socket:Socket | undefined
 }
@@ -38,7 +42,7 @@ export const useSocket = () => {
 export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
 
     const [socket, setSocket] = useState<Socket>();
-    const [messages, setMessages] = useState<string[]>([]);
+    const [messages, setMessages] = useState<{message:string, user:string, color:string}[]>([]);
     const [userInRoom, setUserInRoom] = useState<string[]>([]);
 
     const router = useRouter(); 
@@ -64,15 +68,17 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
     )
     
     const sendPosition: ISocketContext["sendPosition"] = ({prevPoint, currentPoint, color}) => 
-        {
-            // console.log(prevPoint,currentPoint,color);
-            socket?.emit('draw-line',{prevPoint,currentPoint,color});    
-        }
+    {
+        // const socketId = socket?.id;
+        // console.log(prevPoint,currentPoint,color);
+        socket?.emit('draw-line',{prevPoint,currentPoint,color});    
+    }
 
     // Receive Part
-    const receiveMessage = useCallback((msg:{message:string}) => {
+    const receiveMessage = useCallback((msg:{message:string, user:string}) => {
         // console.log("Message", msg);
-        setMessages((prev) => [...prev, msg.message]);
+        var randomColor = Math.floor(Math.random()*16777215).toString(16);
+        setMessages((prev) => [...prev, {message:msg.message, user:msg.user, color:`#${randomColor}`}]);
     },[])
 
     const onSuccessJoin = useCallback((msg:{success:boolean, user: string}) => {
@@ -85,13 +91,9 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
 
     }, []);
 
-    const userJoined = useCallback((msg:{newUser: string}) => {
+    const userJoined = (msg:{newUser: string}) => {
         setUserInRoom((prev) => [...prev, msg.newUser]);
-    }, []);
-
-    // const recPosition = useCallback((msg:{prevPoint:string,currentPoint:string,color:string}) => {
-    //     // const ctx ;
-    // },[])
+    }
 
     useEffect(() => {
         const _socket = io('http://localhost:3001');
@@ -109,7 +111,6 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
             setSocket(undefined);
         }
     },[])
-
 
     return (
         <SocketContext.Provider value={{ socket, sendMessage, messages, joinRoom, userInRoom, sendPosition }}>
