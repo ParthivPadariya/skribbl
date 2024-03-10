@@ -5,12 +5,12 @@ import React, { useState } from "react";
 import {useSocket} from '@/context/SocketProvider'
 
 
-interface params {
-  userName: string;
-}
+// interface params {
+//   userName: string;
+// }
 
 
-const gameChat: React.FC<params> = (params) => {
+const gameChat: React.FC = () => {
 
   const [msg, setMsg] = useState("");
   
@@ -28,7 +28,7 @@ const gameChat: React.FC<params> = (params) => {
           return (
             <div key={key} className="flex gap-1">
               <h1>{item.user}</h1>
-              <h1 style={{color:`${item.color}`, width:"240px"}}>{item.message}</h1>
+              <h1 style={{color:`${item.color}`, width:"240px", height:"max-content"}}>{item.message}</h1>
             </div>
           );
         })}

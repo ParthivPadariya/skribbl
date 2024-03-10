@@ -5,7 +5,24 @@ const PORT = process.env.PORT || 3001;
 
 const SocketToUser = new Map();
 const socketToRoom = new Map();
+
 const userInRoom = new Map();
+/*
+    roomNo -> [
+
+        {
+            user:"Name"
+            change: true
+        }, 
+        {
+            user: "another"
+            change: false
+        },...
+    ]
+    
+*/
+const roomToDetails = new Map();
+
 
 function init() {
     
@@ -37,16 +54,25 @@ function init() {
             socketToRoom.set(socket.id,randomRoom);
             let result = userInRoom.get(randomRoom);
             
+            
             if(result != undefined){
                 userInRoom.set(randomRoom,[...userInRoom?.get(randomRoom),user]);
             }
             else{
+                // No User
                 userInRoom.set(randomRoom,[user]);
+                roomToDetails.set(randomRoom, {
+                    time: 60,
+                    round:0
+                });
             }
 
             // console.log("userInRoom", userInRoom);
-            const a = JSON.stringify(Array.from(userInRoom.entries()));
-            io.to(randomRoom).emit("user-joined", {newUser:user,userList:a, room: randomRoom});
+            // const userData = JSON.stringify(Array.from(userInRoom.entries()));
+            const userData = JSON.stringify(Array.from(userInRoom.get(randomRoom)));
+            const roomData = JSON.stringify(roomToDetails.get(randomRoom));
+
+            io.to(randomRoom).emit("user-joined", {newUser:user,userList:userData, room: randomRoom, roomDetails:roomData});
 
             let size = io.sockets.adapter.rooms.get(randomRoom)?.size
             // console.log(size,randomRoom);
@@ -74,7 +100,11 @@ function init() {
             // console.log(remTime,currRound);
 
             const roomId = socketToRoom.get(socket.id);
-
+            roomToDetails.set(roomId,{
+                time: remTime,
+                round: currRound
+            })
+            // console.log(roomToDetails.get(roomId));
             io.to(roomId).emit('update-room', {remTime, currRound});
         })
 

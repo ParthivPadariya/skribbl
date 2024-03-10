@@ -17,13 +17,26 @@ interface Draw {
 export const useDraw = (onDraw: ({ ctx, currentPoint, prevPoint }: Draw) => void) => {
     const [mouseDown, setMouseDown] = useState(false)
   
+
+
     // canvas reference where we have to draw
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const prevPoint = useRef<null | Point>(null)
   
-    const onMouseDown = () => setMouseDown(true)
+    const onMouseDown = ({user}:{user:string}) => {
+
+      // setMouseDown(true)
+      if (user == "Parthiv") {
+        setMouseDown(true)
+      }
+      else{
+        setMouseDown(false);
+      }
+    }
   
     const clear = () => {
+
+      
       const canvas = canvasRef.current
       if (!canvas) return
   

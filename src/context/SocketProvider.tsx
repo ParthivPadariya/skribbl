@@ -57,7 +57,6 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
         round:0
     });
 
-
     const router = useRouter(); 
 
     // Sending Part
@@ -73,7 +72,6 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
     
     const joinRoom: ISocketContext["joinRoom"] = useCallback(
         ({userName}) => {
-            // console.log("Join Room",userName);
             socket?.emit("join-room",{user:userName});
         },[socket]
     )
@@ -104,12 +102,20 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
 
     }, []);
 
-    const userJoined = (msg:{newUser: string, userList: string, room:number}) => {
+    const userJoined = (msg:{newUser: string, userList: string, room:number, roomDetails:string}) => {
         // console.log(msg.userList);
-        const receiveMap = new Map(JSON.parse(msg.userList));
-        const result:string[]|any = receiveMap.get(msg.room);
-  
+        // const receiveMap = new Map(JSON.parse(msg.userList));
+        // const result:string[]|any = receiveMap.get(msg.room);
+
+        const result = JSON.parse(msg.userList);
         setUserInRoom(result);
+
+        const roomDetailMap:{
+            time:number,
+            round:number
+        } = JSON.parse(msg.roomDetails);
+        
+        setRoomDetails({time:roomDetailMap.time, round:roomDetailMap.round});
         // setUserInRoom((prev) => [...prev, msg.newUser]);
     }   
 
@@ -132,6 +138,7 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
         // _socket.on('draw-line',recPosition);
         _socket.on('leave-room', removeUser);
         _socket.on('update-room', updateRoomDetails)
+        
 
         setSocket(_socket);
 

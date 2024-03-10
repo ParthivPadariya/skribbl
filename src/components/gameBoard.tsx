@@ -21,8 +21,10 @@ interface Draw {
 }
 */
 
-const GameBoard = () => {
+const GameBoard = ({user}:{user:any}) => {
 
+  // console.log(user);
+  
   const {canvasRef,onMouseDown, clear} = useDraw(createLine);
 
   const {sendPosition, socket} = useSocket();
@@ -65,7 +67,7 @@ const GameBoard = () => {
       <div className='bg-white'>
         <canvas
           ref={canvasRef}
-          onMouseDown={onMouseDown}
+          onMouseDown={() => onMouseDown({user:user})}
           width={820}
           height={600}
           className='border-2 border-black rounded-md'
