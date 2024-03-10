@@ -9,19 +9,19 @@ import Setting from '../assets/Setting.png'
 
 const NavBar = () => {
 
-  const [randomIndex, setRandomIndex] = useState(0);
+  // const [randomIndex, setRandomIndex] = useState(0);
   
-  const randomName = ["Lion","Bag", "Elephants", "Milk", "Water", "Rain", "River", "grass"];
+  // const randomName = ["Lion","Bag", "Elephants", "Milk", "Water", "Rain", "River", "grass"];
   
   const {socket, roomDetails} = useSocket();
 
   const [time, setTime] = useState(roomDetails.time)
-  const [noOfRound, setOfRound] = useState(roomDetails.round);
+  const [currRound, setCurrRound] = useState(roomDetails.round);
+  
 
   useEffect(() => {
-
     const result:any = time > 0 && setInterval(() => {
-      socket?.emit('update-room', {remTime:time,currRound:noOfRound})
+      socket?.emit('update-room', {remTime:time,currRound:currRound})
       setTime(time-1);
     },1000)
 
@@ -33,13 +33,12 @@ const NavBar = () => {
   
 
 
-  if (time == 0 && noOfRound < 3) {
+  if (time == 0 && currRound < 3) {
     setTime(60);
-    setOfRound(noOfRound + 1);
-    setRandomIndex(Math.floor(Math.random()*10+1));
+    setCurrRound(currRound+1);
   }
 
-  if (noOfRound == 3) {
+  if (currRound == 3) {
     console.log("Result Declare");
   }
 
@@ -59,7 +58,7 @@ const NavBar = () => {
             time
           }
         </p>
-        <p>No of Round:{noOfRound}</p>
+        <p>No of Round:{currRound}</p>
 
         <div className='flex flex-col justify-center items-center w-10/12 '>
             <p>Guess This</p> 

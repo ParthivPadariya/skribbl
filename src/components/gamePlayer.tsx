@@ -20,9 +20,12 @@ const gamePlayer = () => {
   return (
     <div>
       {
-        userInRoom.map((item:string,key=0) => {
+        userInRoom.map((item:{
+          user:string,
+          change:boolean
+        },key=0) => {
           // console.log(key,randomTorn);
-          return <Player key={key} user={item} turn={randomTorn == key ? true : false}/>
+          return <Player key={key} user={item}/>
         })
       }
     </div>

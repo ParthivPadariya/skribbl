@@ -23,10 +23,13 @@ export const useDraw = (onDraw: ({ ctx, currentPoint, prevPoint }: Draw) => void
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const prevPoint = useRef<null | Point>(null)
   
-    const onMouseDown = ({user}:{user:string}) => {
-
+    const onMouseDown = ({change}:{change:boolean}) => {
+      // setMouseDown(change);
+      // console.log(user);
+      
+      // const user:string = "";
       // setMouseDown(true)
-      if (user == "Parthiv") {
+      if (change) {
         setMouseDown(true)
       }
       else{

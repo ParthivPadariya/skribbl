@@ -4,12 +4,14 @@ import React from 'react'
 
 import Pencil from '../assets/Pencil1.gif'
 
-interface user {
-  turn: boolean,
-  user: string
+interface propsType {
+  user:{
+    user:string,
+    change:boolean
+  }
 }
 
-const Player:React.FC<user> = (props) => {
+const Player:React.FC<propsType> = (props) => {
   return (
 
     <div className='flex gap-2 w-60 border rounded-s items-center justify-center p-2'>
@@ -21,14 +23,14 @@ const Player:React.FC<user> = (props) => {
 
       <div className='flex flex-col w-32 items-center justify-center'>
         <div>
-          <h1>{props.user}</h1>
+          <h1>{props.user.user}</h1>
         </div>
         <p className='text-xs'>175 Points</p>
       </div>
 
       <div className='flex gap-1 items-center justify-center m-1'>
         {
-          props.turn ?
+          props.user.change ?
           <Image
           src={Pencil}
           width={30}

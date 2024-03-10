@@ -18,13 +18,16 @@ interface ISocketContext {
     joinRoom: ({userName}:{userName:string}) => any;
     sendMessage: (msg: string) => any;
     sendPosition: ({prevPoint, currentPoint, color}:{prevPoint:Point|null, currentPoint:Point|null, color:string|undefined}) => any
-    updateRoomDetails: ({remTime, currRound}:{remTime:number, currRound:number}) => any;
+    updateRoomDetails: ({roomDetails, userList}:{roomDetails:string, userList:string}) => any;
     messages: {
         message: string,
         user: string,
         color: string
     }[];
-    userInRoom: string[];
+    userInRoom: {
+        user:string,
+        change:boolean
+    }[];
     socket:Socket | undefined
     roomDetails: {
         time:number,
@@ -48,7 +51,10 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
 
     const [socket, setSocket] = useState<Socket>();
     const [messages, setMessages] = useState<{message:string, user:string, color:string}[]>([]);
-    const [userInRoom, setUserInRoom] = useState<string[]>([]);
+    const [userInRoom, setUserInRoom] = useState<{
+        user:string,
+        change:boolean
+    }[]>([]);
     const [roomDetails,setRoomDetails] = useState<{
         time:number,
         round:number
@@ -121,13 +127,25 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
 
     const removeUser = useCallback((msg:{userName: string, userList: string}) => {
         const receive = JSON.parse(msg.userList);
+        // console.log(receive);
+        
         setUserInRoom(receive);
     },[])
 
-    const updateRoomDetails:ISocketContext['updateRoomDetails'] = useCallback(({remTime, currRound}) => {
+    const updateRoomDetails:ISocketContext['updateRoomDetails'] = ({roomDetails, userList}) => {
         // console.log(remTime,currRound);
-        setRoomDetails({time:remTime, round:currRound});
-    },[])
+        console.log(roomDetails);
+        const room:{
+            time:number,
+            round:number
+        } = JSON.parse(roomDetails);
+        
+        setRoomDetails({time:room.time, round:room.round});
+        const result = JSON.parse(userList);
+        // console.log(result);
+        
+        setUserInRoom(result);
+    }
 
     useEffect(() => {
         const _socket = io('http://localhost:3001');
@@ -138,7 +156,7 @@ export const SocketProvider:React.FC<SocketProviderProps> = ({children}) => {
         // _socket.on('draw-line',recPosition);
         _socket.on('leave-room', removeUser);
         _socket.on('update-room', updateRoomDetails)
-        
+
 
         setSocket(_socket);
 

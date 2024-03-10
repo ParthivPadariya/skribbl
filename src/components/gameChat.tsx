@@ -19,6 +19,7 @@ const gameChat: React.FC = () => {
   function sendMess(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     sendMessage(msg);
+    setMsg("");
   }
 
   return (
@@ -40,6 +41,7 @@ const gameChat: React.FC = () => {
           className="p-2 text-black"
           placeholder="Type Your guess here"
           name="msg"
+          value={msg}
           onChange={(e) => {
             setMsg(e.target.value);
           }}

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {useDraw} from '@/hooks/useDraw'
 
 // Context
@@ -21,13 +21,28 @@ interface Draw {
 }
 */
 
-const GameBoard = ({user}:{user:any}) => {
+interface propsType{
+  user:string
+}
 
-  // console.log(user);
+const GameBoard:React.FC<propsType> = (user) => {
+
   
   const {canvasRef,onMouseDown, clear} = useDraw(createLine);
 
-  const {sendPosition, socket} = useSocket();
+  const {sendPosition, socket, userInRoom} = useSocket();
+  
+  // const [change,setChange] = useState<boolean>(false);
+  let change:boolean = false;
+
+  const len = userInRoom.length;
+  for(let i = 0; i<len; i++){
+    if(userInRoom[i].user == user.user && userInRoom[i].change){
+      change = true;
+      break;
+    }
+  }
+  
 
   useEffect(() => {
 
@@ -67,7 +82,7 @@ const GameBoard = ({user}:{user:any}) => {
       <div className='bg-white'>
         <canvas
           ref={canvasRef}
-          onMouseDown={() => onMouseDown({user:user})}
+          onMouseDown={() => onMouseDown({change})}
           width={820}
           height={600}
           className='border-2 border-black rounded-md'
@@ -81,9 +96,12 @@ const GameBoard = ({user}:{user:any}) => {
         </div> */}
       </div>
 
-      <button type='button' className='p-2 rounded-md bg-white text-black border border-black' onClick={() => clearCanvas()}>
-        Clear Canvas 
-      </button>
+      {
+        change ? <button type='button' className='p-2 rounded-md bg-white text-black border border-black' onClick={() => clearCanvas()}>
+          Clear Canvas 
+        </button> : null
+        
+      }
     </div>
   )
 }
